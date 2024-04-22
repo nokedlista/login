@@ -1,0 +1,51 @@
+table, th, td {
+    border: 1px solid;
+}
+table {
+    border-collapse: collapse;
+    width: 50%;
+    float: left;
+}
+tbody{
+    margin-left: 5%;
+}
+td{
+    align-content: center;
+    text-align: center;
+    width: auto;
+}
+img{
+    width: 25%;
+    height: 25%;
+    /* margin-left: 5px;
+    margin-right: 5px; */
+}
+.gomb{
+    position: relative;
+    display:inline-block
+}
+.sorba{
+    position: relative;
+    display:inline-block
+}
+.hozzaad{
+    right: 40px;    
+    position: fixed;
+}
+.kereses{
+    right: 110px;
+    top: 33%;
+    position: fixed;
+}
+.modosit{
+    position: fixed;
+    left:53%
+}
+.export{
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+}
+.sticky{
+    position: sticky;
+}
