@@ -16,10 +16,14 @@
     <?php
     require_once("DBCounties.php");
     require_once("DBCities.php");
-    require_once('CsvTools.php');
+    require_once("CsvTools.php");
+    require_once("login.php");
+    require_once("login_if.php");
+    require_once("createDB.php");
 
     $countyMaker = new DBCounties();
     $cityMaker = new DBCities();
+    $createDB = new installDB();
 
     $fileName = 'zip_codes.csv';
     $csvData = getCsvData($fileName);
@@ -53,6 +57,7 @@
             echo "<script>alert('Sikereres módosítás!');</script>";
         }
     }
+    
 
     if (isset($_POST["btn-new"])) {
         $name = $_POST["newCityName"];
@@ -67,6 +72,37 @@
             echo "<script>alert('Töltse ki mindhárom mezőt!');</script>";
         }
     }
+    if (isset($_POST["btn-install"]))
+    {
+        $createDB->createDatabase();
+        $login = new Login();
+        $login->createLoginTable();
+    }
+    if (isset($_POST["btn-register"]))
+    {
+        showRegisterInterFace();
+    }
+    if (isset($_POST["btn-register-push"]))
+    {
+        $email = $_POST["email"];
+        if(!$login->emailExists($email))
+        {
+            echo '<script>alert("Ilyen email cím már van!")</script>';
+        }
+        else
+        {
+            $login->registerPush($_POST["name"],$_POST["email"],$_POST["password1"]);
+        }
+    }
+    if (isset($_POST["btn-login"]))
+    {
+        showLoginInterFace();
+    }
+    if (isset($_POST["btn-login-push"]))
+    {
+        $login->loginPush($_POST["email"],$_POST["password1"]);
+    }
+
     ?>
     <div class='hozzaad'>
         <h2>Város hozzáadása</h2>
@@ -107,15 +143,24 @@
             <button type='submit' id="btn-export" name="btn-export" title="Export to .CSV">Export CSV</button>
         </form>
     </div>
-    <div class='PDF'>
-        <form method="post" action="downloadPDF.php">
-            <button type='submit' id="btn-pdf" name="btn-pdf" title="Download PDF">Download PDF</button>
+    <form method="post" action="downloadPDF.php">
+        <button class='PDF' type='submit' id="btn-pdf" name="btn-pdf" title="Download PDF">Download PDF</button>
+    </form>
+    <div class='db'>
+        <form method="post">
+            <button type='submit' id="btn-install" name="btn-install" title="Install">Install</button>
         </form>
     </div>
-    
-
-    
-
+    <div class='register'>
+        <form method="post">
+            <button type='submit' id="btn-register" name="btn-register" title="Register" onclick='gombRejtes()'>Register</button>
+        </form>
+    </div>
+    <div class='login'>
+        <form method="post">
+            <button type='submit' id="btn-login" name="btn-login" title="Log in" onclick='gombRejtes()'>Log in</button>
+        </form>
+    </div>
 </body>
 
 </html>

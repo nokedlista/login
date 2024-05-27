@@ -74,3 +74,10 @@ function modify (zipId) {
         }
     })
 }
+function gombRejtes()
+{
+    var x = document.getElementById("btn-login");
+    var y = document.getElementById("btn-register");
+    x.style.display = "none";
+    y.style.display = "none";
+}

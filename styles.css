@@ -34,7 +34,7 @@ img{
 }
 .kereses{
     right: 110px;
-    top: 33%;
+    top: 45%;
     position: fixed;
 }
 .modosit{
@@ -46,6 +46,8 @@ img{
     right: 40px;
     bottom: 40px;
 }
-.sticky{
-    position: sticky;
+.PDF{
+    position: fixed;
+    right: 40%;
+    bottom: 40px;
 }
