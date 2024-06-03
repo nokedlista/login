@@ -100,7 +100,7 @@
     }
     if (isset($_POST["btn-login-push"]))
     {
-        $login->loginPush($_POST["email"],$_POST["password1"]);
+        $login->login($_POST["email"],$_POST["password1"], );
     }
 
     ?>

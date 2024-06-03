@@ -1,5 +1,14 @@
 <?php
 require_once("login_if.php");
+require_once("registration.php");
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
 class Login
 {
     protected $mysqli;
@@ -51,10 +60,38 @@ class Login
       $token = $this->token();
       $sql = "INSERT INTO login_table(name, email, password, token, token_valid_until)
       VALUES('$username', '$email', '$password', '$token', '$validUntil')";
-      return $this->mysqli->query($sql);
+      $this->mysqli->query($sql);
+      $mail = new PHPMailer(true);
+
+      try {
+        //Server settings
+        $mail->isSMTP();                                            
+        $mail->Host       = 'localhost';                     
+        $mail->SMTPAuth   = false;                                                                 
+        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            
+        $mail->Port       = 1025;                                    
+
+        //Recipients
+        $mail->setFrom('from@example.com', 'Mailer');
+        $mail->addAddress($email, $username);     
+        $mail->addReplyTo('info@example.com', 'Information'); 
+
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = 'Conformation letter';
+        $mail->Body    = "Your registration is almost complete <br> Click the link below to activate your account: <br> <a href='http://localhost:8084/Demény%20Máté%20PHP/login/registration.php?token=$token'>Complete registration</a>";
+        $mail->AltBody = '';
+
+        $mail->send();
+        echo "An email has been sent to you with the remaining steps.";
+      } 
+      catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+      }
     }
 
-    function loginPush($email, $password)
+
+
+    function login($email, $password)
     {
       $sql = "SELECT * FROM login_table WHERE email = '$email' AND password = '$password'";
       $result = $this->mysqli->query($sql);
@@ -65,11 +102,25 @@ class Login
       }
       else
       {
-        $date = new DateTime();
-        $date = $date->format("Y-m-d H:i:s");
-        $sql = "UPDATE login_table SET is_active = TRUE, registered_at = '$date' WHERE email = '$email'";
-        return $this->mysqli->query($sql);
+        
       }
+    }
+
+    function registrationSucc($email)
+    {
+      $date = new DateTime();
+      $date = $date->format("Y-m-d H:i:s");
+      $sql = "UPDATE login_table SET is_active = TRUE, registered_at = '$date' WHERE email = '$email'";
+      echo "Registration complete!";
+      return $this->mysqli->query($sql);
+    }
+
+    function getUserByToken($token)
+    {
+      $sql = "SELECT * FROM login_table WHERE token = '$token' AND token_valid_until > NOW()";
+      $result = $this->mysqli->query($sql);
+      $fetch = $result->fetch_array(MYSQLI_NUM);
+      return $fetch;
     }
 
     function emailExists($email)
@@ -80,6 +131,8 @@ class Login
       
       return empty($fetch);
     }
+
+    
     
 }
 
