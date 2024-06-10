@@ -84,6 +84,7 @@
     }
     if (isset($_POST["btn-register-push"]))
     {
+        $login = new Login();
         $email = $_POST["email"];
         if(!$login->emailExists($email))
         {
@@ -100,6 +101,7 @@
     }
     if (isset($_POST["btn-login-push"]))
     {
+        $login = new Login();
         $login->login($_POST["email"],$_POST["password1"], );
     }
 
